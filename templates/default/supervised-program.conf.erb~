@@ -1,2 +1,0 @@
-[program: <%= program.name %>]
-command = <%= program.command %>
