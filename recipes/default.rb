@@ -17,13 +17,31 @@
 # limitations under the License.
 #
 
-package "supervisor"
+package "supervisor" do
+  action :install
+end
 
-cookbook_file "/etc/supervisor/supervisord.conf" do
-  source "supervisord.conf"
+template "#{node["supervisord"]["conf_dir"]}/supervisord.conf" do
+  source "supervisord.conf.erb"
+  mode "0644"
   owner "root"
   group "root"
-  mode "0644"
+  # Check to make sure each "section" of the config has actual values before we 
+  # pass them off to the template; yeah, this is kind of ugly :(
+  variables(
+    :globals => (node["supervisord"]["globals"] \
+      unless (node["supervisord"]["globals"].map { |k,v| not v.nil? }\
+        .select {|a| a}.empty?)),
+    :unix_http_server => (node["supervisord"]["unix_http_server"] \
+      unless (node["supervisord"]["unix_http_server"].map { |k,v| not v.nil? }\
+        .select {|a| a}.empty?)),
+    :inet_http_server => (node["supervisord"]["inet_http_server"] \
+      unless (node["supervisord"]["inet_http_server"].map { |k,v| not v.nil? }\
+        .select {|a| a}.empty?)),
+    :supervisorctl => (node["supervisord"]["supervisorctl"] \
+      unless (node["supervisord"]["supervisorctl"].map { |k,v| not v.nil? }\
+        .select {|a| a}.empty?))
+  )
 end
 
 service "supervisor" do
@@ -31,4 +49,3 @@ service "supervisor" do
   reload_command "supervisorctl update"
   action [:enable, :start]
 end
-

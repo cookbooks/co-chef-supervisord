@@ -1,0 +1,38 @@
+; supervisor config file created by Chef
+
+<% if @unix_http_server %>
+[unix_http_server]
+<% @unix_http_server.each do |k, v| %>
+<%= "#{k}=#{v}" unless v.nil? %>
+<% end -%>
+<% end -%>
+
+<% if @inet_http_server %>
+[inet_http_server]
+<% @inet_http_server.each do |k,v| %>
+<%= "#{k}=#{v}" unless v.nil? %>
+<% end -%>
+<% end -%>
+
+<% if @globals %>
+[supervisord]
+<% @globals.each do |k,v| %>
+<%= "#{k}=#{v}" unless v.nil? %>
+<% end -%>
+<% end -%>
+
+; the below section must remain in the config file for RPC
+; (supervisorctl/web interface) to work, additional interfaces may be
+; added by defining them in separate rpcinterface: sections
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+<% if @supervisorctl %>
+[supervisorctl]
+<% @supervisorctl.each do |k,v| %>
+<%= "#{k}=#{v}" unless v.nil? %>
+<% end -%>
+<% end -%>
+
+[include]
+files = <%= "#{node["supervisord"]["conf_dir"]}/conf.d/*.conf" %>
