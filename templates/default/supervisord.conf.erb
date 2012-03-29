@@ -35,4 +35,4 @@ supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 <% end -%>
 
 [include]
-files = <%= "#{node["supervisord"]["conf_dir"]}/conf.d/*.conf" %>
+files = <%= "#{node["supervisord"]["globals"]["conf_dir"]}/conf.d/*.conf" %>

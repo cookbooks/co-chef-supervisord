@@ -24,7 +24,7 @@ node['supervisord']['data_bag_items'].each do |id|
 end
 
 programs.each do |program|
-  template "#{node['supervisord']['conf_dir']}/conf.d/#{program[:id]}.conf" do
+  template "#{node['supervisord']['globals']['conf_dir']}/conf.d/#{program[:id]}.conf" do
     source "supervised-program.conf.erb"
     owner "root"
     group "root"
