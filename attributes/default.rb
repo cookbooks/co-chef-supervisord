@@ -2,9 +2,9 @@
 # This is a list of data bag items that will be queried to 
 # configure [program:x] sections
 set[:supervisord][:data_bag_items] = []
+set[:supervisord][:conf_dir] = '/etc/supervisor'
 
 # global supervisord settings
-set[:supervisord][:globals][:conf_dir] = '/etc/supervisor'
 set[:supervisord][:globals][:logfile] = '/var/log/supervisor/supervisord.log'
 set[:supervisord][:globals][:pidfile] = '/var/run/supervisord.pid'
 set[:supervisord][:globals][:childlogdir] = '/var/log/supervisor'

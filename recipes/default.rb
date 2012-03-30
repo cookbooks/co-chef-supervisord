@@ -21,7 +21,7 @@ package "supervisor" do
   action :install
 end
 
-template "#{node["supervisord"]["globals"]["conf_dir"]}/supervisord.conf" do
+template "#{node["supervisord"]["conf_dir"]}/supervisord.conf" do
   source "supervisord.conf.erb"
   mode "0644"
   owner "root"
