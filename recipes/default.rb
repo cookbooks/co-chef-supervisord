@@ -29,16 +29,16 @@ template "#{node["supervisord"]["conf_dir"]}/supervisord.conf" do
   # Check to make sure each "section" of the config has actual values before we 
   # pass them off to the template; yeah, this is kind of ugly :(
   variables(
-    :globals => (node["supervisord"]["globals"] \
+    :globals => (node["supervisord"]["globals"].select { |k,v| k unless v.nil? } \
       unless (node["supervisord"]["globals"].map { |k,v| not v.nil? }\
         .select {|a| a}.empty?)),
-    :unix_http_server => (node["supervisord"]["unix_http_server"] \
+    :unix_http_server => (node["supervisord"]["unix_http_server"].select { |k,v| k unless v.nil? } \
       unless (node["supervisord"]["unix_http_server"].map { |k,v| not v.nil? }\
         .select {|a| a}.empty?)),
-    :inet_http_server => (node["supervisord"]["inet_http_server"] \
+    :inet_http_server => (node["supervisord"]["inet_http_server"].select { |k,v| k unless v.nil? } \
       unless (node["supervisord"]["inet_http_server"].map { |k,v| not v.nil? }\
         .select {|a| a}.empty?)),
-    :supervisorctl => (node["supervisord"]["supervisorctl"] \
+    :supervisorctl => (node["supervisord"]["supervisorctl"].select { |k,v| k unless v.nil? } \
       unless (node["supervisord"]["supervisorctl"].map { |k,v| not v.nil? }\
         .select {|a| a}.empty?))
   )
@@ -49,3 +49,12 @@ service "supervisor" do
   reload_command "supervisorctl update"
   action [:enable, :start]
 end
+
+# TODO: starting/restarting the supervisor service may fail if there's an existing:
+# "/var/run/supervisor.sock"... you have run:
+#
+#     unlink /var/run/supervisor.sock
+#
+# for this to work.
+#
+# See: http://serverfault.com/questions/114477/supervisor-http-server-port-issue

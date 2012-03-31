@@ -3,21 +3,21 @@
 <% if @unix_http_server %>
 [unix_http_server]
 <% @unix_http_server.each do |k, v| %>
-<%= "#{k}=#{v}" unless v.nil? %>
+<%= "#{k}=#{v}" %>
 <% end -%>
 <% end -%>
 
 <% if @inet_http_server %>
 [inet_http_server]
 <% @inet_http_server.each do |k,v| %>
-<%= "#{k}=#{v}" unless v.nil? %>
+<%= "#{k}=#{v}" %>
 <% end -%>
 <% end -%>
 
 <% if @globals %>
 [supervisord]
 <% @globals.each do |k,v| %>
-<%= "#{k}=#{v}" unless v.nil? %>
+<%= "#{k}=#{v}" %>
 <% end -%>
 <% end -%>
 
@@ -30,7 +30,7 @@ supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 <% if @supervisorctl %>
 [supervisorctl]
 <% @supervisorctl.each do |k,v| %>
-<%= "#{k}=#{v}" unless v.nil? %>
+<%= "#{k}=#{v}" %>
 <% end -%>
 <% end -%>
 
