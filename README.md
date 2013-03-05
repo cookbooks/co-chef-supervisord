@@ -13,11 +13,11 @@ Attributes
 ==========
 There are a number of attributes that correspond to supervisord settings. For a full list, see `attributes/default.rb` and the [supervisord config docs](http://supervisord.org/configuration.html).
 
-Additionally, there is a `node[:supervisord][:data_bag_items]` attribute, which should be overriden in a role. This tells the `includes` recipe, which data bag items to use in order to write config files for supervised programs.
+Additionally, there is a `node[:supervisord][:data_bag_items]` attribute, which should be overriden in a role. This tells the `includes` recipe, which data bag items to use in order to write config files for supervised programs/program groups.
 
 Recipes
 =======
-This cookbook contains the following recipies.
+This cookbook contains the following recipes.
 
 `default`
 ---------
@@ -25,15 +25,23 @@ Installs and configures supervisord
 
 `includes`
 ------------------
-This recipe writes a config file for programs that will be supervised. Configuration data is read from a `supervisord` data bag. Each item in the data bag should contain keys/values that correspond to the settings that would typically go within an `[program:x]` section in the supervisord config file (see [the supervisord docs](http://supervisord.org/configuration.html#program-x-section-example) for more information).
+This recipe writes a config file for programs/groups that will be supervised. Configuration data is read from a `supervisord` data bag. Each item in the data bag should contain keys/values that correspond to the settings that would typically go within an `[program:x]` (or `[group:x]`) section in the supervisord config file (see [the supervisord docs](http://supervisord.org/configuration.html#program-x-section-example) for more information).
 
-A sample data bag item might look like:
+A sample data bag item for a program might look like:
 
     {
         "id": "myprogram",
+        "include_type": "program",
         "command": "/path/to/myprogram"
     }
 
+And a group might look like:
+
+    {
+        "id": "mygroup",
+        "include_type": "group",
+        "programs": "myprogram,myotherprogram"
+    }
 
 Usage
 =====
@@ -50,8 +58,9 @@ Create a Role and override the attributes to fit your needs. An example role mig
     override_attributes(
       "supervisord" => {
         "data_bag_items" => [
-            "myprogram_data_bag_item", 
-            "myotherprogram_data_bag_item" 
+            "myprogram_data_bag_item",
+            "myotherprogram_data_bag_item",
+            "mygroup"
         ]
       }
     )

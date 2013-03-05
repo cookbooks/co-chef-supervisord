@@ -1,12 +1,12 @@
 action :supervise do
   template "#{node['supervisord']['conf_dir']}/conf.d/#{new_resource.name}.conf" do
-    source "supervised-program.conf.erb"
+    source "include.conf.erb"
     cookbook "supervisord"
     owner "root"
     group "root"
     mode "0644"
-    variables :program => new_resource
+    variables :inc => new_resource, :type => 'program'
 
-    notifies :restart, resources(:service => "supervisor")
+    notifies :reload, resources(:service => "supervisor")
   end
 end

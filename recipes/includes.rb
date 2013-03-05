@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: supervisord
-# Recipe:: programs 
+# Recipe:: includes
 #
 # Copyright 2012, ... TODO
 #
@@ -16,21 +16,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-programs = []
+includes = []
+groups = []
 node['supervisord']['data_bag_items'].each do |id|
-  search(:supervisord, "id:#{id}") do |program|
-    programs << program
+  search(:supervisord, "id:#{id}") do |inc|
+    includes << inc
   end
 end
 
-programs.each do |program|
-  template "#{node['supervisord']['conf_dir']}/conf.d/#{program[:id]}.conf" do
-    source "supervised-program.conf.erb"
+includes.each do |inc|
+  template "#{node['supervisord']['conf_dir']}/conf.d/#{inc[:id]}.conf" do
+    source "include.conf.erb"
     owner "root"
     group "root"
     mode "0644"
     variables(
-      :program => program
+      :inc => inc,
+      :include_type => inc.fetch('include_type', 'program')
     )
     notifies :reload, "service[supervisor]"
   end
