@@ -57,6 +57,7 @@ if platform?("ubuntu")
   # Now start it.
   service "supervisor" do
     supports :status => true, :restart => true, :reload => true
+    provider Chef::Provider::Service::Upstart
     action [:enable, :start]
   end
 else
