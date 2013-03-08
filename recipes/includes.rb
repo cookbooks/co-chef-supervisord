@@ -34,6 +34,5 @@ includes.each do |inc|
       :inc => inc,
       :include_type => inc.fetch('include_type', 'program')
     )
-    notifies :reload, "service[supervisor]"
   end
 end
