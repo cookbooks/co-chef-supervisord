@@ -44,10 +44,28 @@ template "#{node["supervisord"]["conf_dir"]}/supervisord.conf" do
   )
 end
 
-service "supervisor" do
-  supports :status => true, :restart => false, :reload => true
-  reload_command "supervisorctl update"
-  action [:enable, :start]
+if platform?("ubuntu")
+  # Replace the cruddy sysvinit script that comes with the package
+  # with an upstart configuration.
+  cookbook_file "/etc/init/supervisor.conf" do
+    source "supervisor.conf"
+    action :create
+  end
+  file "/etc/init.d/supervisor" do
+    action :delete
+  end
+  # Now start it.
+  service "supervisor" do
+    supports :status => true, :restart => true, :reload => true
+    provider Chef::Provider::Service::Upstart
+    action [:enable, :start]
+  end
+else
+  service "supervisor" do
+    supports :status => true, :restart => false, :reload => true
+    reload_command "supervisorctl update"
+    action [:enable, :start]
+  end
 end
 
 # TODO: starting/restarting the supervisor service may fail if there's an existing:

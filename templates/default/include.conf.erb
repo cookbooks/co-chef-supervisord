@@ -1,0 +1,4 @@
+[<%= @include_type %>:<%= @inc['id'] %>]
+<% @inc.each do |k,v| %>
+<%= "#{k}=#{v}" unless k=="id" or k=="include_type" %>
+<% end -%>
